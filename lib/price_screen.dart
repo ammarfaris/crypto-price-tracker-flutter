@@ -9,7 +9,39 @@ class PriceScreen extends StatefulWidget {
 }
 
 class _PriceScreenState extends State<PriceScreen> {
-  String selectedCurrency = 'USD';
+  CoinData coin = CoinData();
+  String selectedCurrency;
+  String selectedCoin;
+  String convertedCurrency = '?';
+
+  @override
+  void initState() {
+    super.initState();
+    selectedCurrency = 'MYR';
+    selectedCoin = 'BITCOIN';
+    getInitValue(selectedCoin, selectedCurrency);
+  }
+
+  void getInitValue(coinName, currency) async {
+    String coinNameLC = coinName.toLowerCase();
+    String currencyLC = currency.toLowerCase();
+    var coinData = await CoinData().convertCoin(coinName, currency);
+    updateUI(coinData, coinNameLC, currencyLC);
+  }
+
+  void updateUI(
+      dynamic coinData, String coinLowerCase, String currencyLowerCase) {
+    setState(() {
+      if (coinData == null) {
+        convertedCurrency = '?';
+        return;
+      }
+      // can either be double or int, hence we set to dynamic
+      dynamic convertedCurrencyVal =
+          coinData['$coinLowerCase']['$currencyLowerCase'];
+      convertedCurrency = convertedCurrencyVal.toString();
+    });
+  }
 
   DropdownButton<String> androidDropdown() {
     List<DropdownMenuItem<String>> dropdownItems = []; // <String> as child
@@ -26,10 +58,12 @@ class _PriceScreenState extends State<PriceScreen> {
     return DropdownButton<String>(
         value: selectedCurrency, // specify starting value
         items: dropdownItems,
-        onChanged: (value) {
-          setState(() {
-            selectedCurrency = value;
-          });
+        onChanged: (value) async {
+          selectedCurrency = value;
+          String selectedCurrencyLC = selectedCurrency.toLowerCase();
+          String selectedCoinLC = selectedCoin.toLowerCase();
+          var coinData = await coin.convertCoin(selectedCoin, selectedCurrency);
+          updateUI(coinData, selectedCoinLC, selectedCurrencyLC);
         });
   }
 
@@ -43,8 +77,13 @@ class _PriceScreenState extends State<PriceScreen> {
     return CupertinoPicker(
       backgroundColor: Colors.lightBlue,
       itemExtent: 32.0,
-      onSelectedItemChanged: (selectedIndex) {
-        print(selectedIndex);
+      onSelectedItemChanged: (selectedIndex) async {
+        selectedCurrency = currenciesList[selectedIndex];
+        //TODO similar code can be refactored
+        String selectedCurrencyLC = selectedCurrency.toLowerCase();
+        String selectedCoinLC = selectedCoin.toLowerCase();
+        var coinData = await coin.convertCoin(selectedCoin, selectedCurrency);
+        updateUI(coinData, selectedCoinLC, selectedCurrencyLC);
       },
       children: pickerItems,
     );
@@ -55,6 +94,8 @@ class _PriceScreenState extends State<PriceScreen> {
       return iOSPicker();
     } else if (Platform.isAndroid) {
       return androidDropdown();
+    } else {
+      return androidDropdown();
     }
   }
 
@@ -62,7 +103,7 @@ class _PriceScreenState extends State<PriceScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('🤑 Coin Ticker'),
+        title: Text('🤑 Crypto Price Tracker'),
       ),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -79,7 +120,7 @@ class _PriceScreenState extends State<PriceScreen> {
               child: Padding(
                 padding: EdgeInsets.symmetric(vertical: 15.0, horizontal: 28.0),
                 child: Text(
-                  '1 BTC = ? USD',
+                  '1 $selectedCoin = $convertedCurrency $selectedCurrency',
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontSize: 20.0,
