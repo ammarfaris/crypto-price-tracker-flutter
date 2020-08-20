@@ -17,16 +17,14 @@ class _PriceScreenState extends State<PriceScreen> {
   @override
   void initState() {
     super.initState();
-    selectedCurrency = 'MYR';
-    selectedCoin = 'BITCOIN';
+    selectedCurrency = 'myr';
+    selectedCoin = 'bitcoin';
     getInitValue(selectedCoin, selectedCurrency);
   }
 
   void getInitValue(coinName, currency) async {
-    String coinNameLC = coinName.toLowerCase();
-    String currencyLC = currency.toLowerCase();
     var coinData = await CoinData().convertCoin(coinName, currency);
-    updateUI(coinData, coinNameLC, currencyLC);
+    updateUI(coinData, coinName, currency);
   }
 
   void updateUI(
@@ -49,7 +47,7 @@ class _PriceScreenState extends State<PriceScreen> {
     for (String currency in currenciesList) {
       // currenciesList from coin_dart.dart
       var newItem = DropdownMenuItem(
-        child: Text(currency),
+        child: Text(currency.toUpperCase()),
         value: currency,
       );
 
@@ -60,10 +58,8 @@ class _PriceScreenState extends State<PriceScreen> {
         items: dropdownItems,
         onChanged: (value) async {
           selectedCurrency = value;
-          String selectedCurrencyLC = selectedCurrency.toLowerCase();
-          String selectedCoinLC = selectedCoin.toLowerCase();
           var coinData = await coin.convertCoin(selectedCoin, selectedCurrency);
-          updateUI(coinData, selectedCoinLC, selectedCurrencyLC);
+          updateUI(coinData, selectedCoin, selectedCurrency);
         });
   }
 
@@ -71,7 +67,7 @@ class _PriceScreenState extends State<PriceScreen> {
     List<Text> pickerItems = [];
 
     for (String currency in currenciesList) {
-      pickerItems.add(Text(currency));
+      pickerItems.add(Text(currency.toUpperCase()));
     }
 
     return CupertinoPicker(
@@ -80,24 +76,22 @@ class _PriceScreenState extends State<PriceScreen> {
       onSelectedItemChanged: (selectedIndex) async {
         selectedCurrency = currenciesList[selectedIndex];
         //TODO similar code can be refactored
-        String selectedCurrencyLC = selectedCurrency.toLowerCase();
-        String selectedCoinLC = selectedCoin.toLowerCase();
         var coinData = await coin.convertCoin(selectedCoin, selectedCurrency);
-        updateUI(coinData, selectedCoinLC, selectedCurrencyLC);
+        updateUI(coinData, selectedCoin, selectedCurrency);
       },
       children: pickerItems,
     );
   }
 
-  Widget getPicker() {
-    if (Platform.isIOS) {
-      return iOSPicker();
-    } else if (Platform.isAndroid) {
-      return androidDropdown();
-    } else {
-      return androidDropdown();
-    }
-  }
+//  Widget getPicker() {
+//    if (Platform.isIOS) {
+//      return iOSPicker();
+//    } else if (Platform.isAndroid) {
+//      return androidDropdown();
+//    } else {
+//      return androidDropdown();
+//    }
+//  }
 
   @override
   Widget build(BuildContext context) {
@@ -120,7 +114,7 @@ class _PriceScreenState extends State<PriceScreen> {
               child: Padding(
                 padding: EdgeInsets.symmetric(vertical: 15.0, horizontal: 28.0),
                 child: Text(
-                  '1 $selectedCoin = $convertedCurrency $selectedCurrency',
+                  '1 ${selectedCoin.toUpperCase()} = $convertedCurrency ${selectedCurrency.toUpperCase()}',
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontSize: 20.0,

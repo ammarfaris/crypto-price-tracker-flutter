@@ -2,35 +2,55 @@ import 'package:bitcoin_ticker/services/networking.dart';
 
 const coinAPI = 'https://api.coingecko.com/api/v3/simple/price';
 
+//const List<String> currenciesList = [
+//  'MYR',
+//  'AUD',
+//  'BRL',
+//  'CAD',
+//  'CNY',
+//  'EUR',
+//  'GBP',
+//  'HKD',
+//  'IDR',
+//  'ILS',
+//  'INR',
+//  'JPY',
+//  'MXN',
+//  'NOK',
+//  'NZD',
+//  'PLN',
+//  // 'RON', // not available
+//  'RUB',
+//  'SEK',
+//  'SGD',
+//  'USD',
+//  'ZAR'
+//];
+
+// default to lower case
 const List<String> currenciesList = [
-  'MYR',
-  'AUD',
-  'BRL',
-  'CAD',
-  'CNY',
-  'EUR',
-  'GBP',
-  'HKD',
-  'IDR',
-  'ILS',
-  'INR',
-  'JPY',
-  'MXN',
-  'NOK',
-  'NZD',
-  'PLN',
-  // 'RON', // not available
-  'RUB',
-  'SEK',
-  'SGD',
-  'USD',
-  'ZAR'
+  'myr',
+  'usd',
+  'aud',
+  'cad',
+  'cny',
+  'eur',
+  'gbp',
+  'hkd',
+  'idr',
+  'inr',
+  'jpy',
+  'nok',
+  'nzd',
+  'rub',
+  'sek',
+  'sgd',
 ];
 
 const List<String> cryptoList = [
-  'BITCOIN', // BTC
-  'ETHEREUM', // ETH
-  'LITECOIN', // LTC
+  'bitcoin', // BTC
+  'ethereum', // ETH
+  'litecoin', // LTC
 ];
 
 class CoinData {
